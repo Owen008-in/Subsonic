@@ -1,0 +1,1081 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="iso-8859-1"%>
+<html><head>
+    <%@ include file="head.jsp" %>
+    <%@ include file="jquery.jsp" %>
+    <script type="text/javascript" src="<c:url value="/script/scripts-2.0.js"/>"></script>
+    <script type="text/javascript" src="<c:url value="/dwr/engine.js"/>"></script>
+    <script type="text/javascript" src="<c:url value="/dwr/util.js"/>"></script>
+    <script type="text/javascript" src="<c:url value="/dwr/interface/nowPlayingService.js"/>"></script>
+    <script type="text/javascript" src="<c:url value="/dwr/interface/playQueueService.js"/>"></script>
+    <script type="text/javascript" src="<c:url value="/dwr/interface/playlistService.js"/>"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js"></script>
+    <%@ include file="playQueueCast.jsp" %>
+
+    <style type="text/css">
+        .ui-slider .ui-slider-handle {
+            width: 12px; height: 12px; cursor: pointer;
+            background: #E65100;
+            display:none;
+            border:none;
+        }
+        .ui-slider {
+            cursor: pointer;
+            border:none;
+        }
+        .ui-slider-range-min {
+            background: #E65100;
+        }
+        .ui-slider-handle:focus {
+            outline:none;
+        }
+        #empty, #playQueueTable {
+            display:none;
+        }
+        #startButton, #stopButton {
+            cursor:pointer; font-size:30px; color:#E65100;
+        }
+        #bufferButton {
+            font-size:30px; color:#E65100
+        }
+        #previousButton, #nextButton {
+            cursor:pointer; font-size:18px; padding:10px; margin-left:10px; margin-right:10px
+        }
+        #muteOn, #muteOff {
+            cursor:pointer; font-size:20px; padding:8px
+        }
+        #collapse, #expand, #castOn, #castOff, #repeatOn, #repeatOff, #shuffle, #starCurrentSong, #unstarCurrentSong {
+            margin-left:12px; margin-right:12px; cursor:pointer; display:none;
+        }
+        #castOff, #collapse, #repeatOff {
+            color: #E65100;
+        }
+        #startButton:hover, #stopButton:hover {
+            opacity: 0.8;
+        }
+        #songName {
+            cursor:pointer; font-weight:600; display:block;
+        }
+        #artistName {
+            cursor:pointer; font-weight:300; display:block;
+        }
+        #coverArt {
+            cursor:pointer; width:80px; height:80px;
+        }
+        #volume {
+            width:100px; height:3px; margin-right:20px
+        }
+        #progress {
+            height:3px; margin: 5px 20px 10px 10px;
+        }
+        #startButton, #stopButton, #bufferButton, #previousButton, #nextButton, #muteOn, #muteOff, #collapse, #expand, #castOn, #castOff,
+        #repeatOn, #repeatOff, #shuffle, #starCurrentSong, #unstarCurrentSong, #progress-and-duration {
+            user-select: none; -webkit-user-select: none;
+        }
+
+        /* Work-around for Safari */
+        #starCurrentSong, #unstarCurrentSong, #repeatOn, #repeatOff, #shuffle, #expand, #collapse {
+            width: 24px;
+        }
+    </style>
+
+    <script type="text/javascript" language="javascript">
+    var songs = null;
+    var currentMediaFileId = null;
+    var repeatEnabled = false;
+    var castPlayer;
+    var localPlayer = null;
+    var jukeboxPlayer = false;
+    var externalPlayer = false;
+    var externalPlayerWithPlaylist = false;
+    var autoHide = ${model.autoHide};
+    var collapsed = true;
+    var currentPosition = 0;
+
+    function init() {
+
+        jukeboxPlayer = ${model.player.jukebox};
+        externalPlayer = ${model.player.external};
+        externalPlayerWithPlaylist = ${model.player.externalWithPlaylist};
+        castPlayer = new CastPlayer(!jukeboxPlayer && !externalPlayer && !externalPlayerWithPlaylist);
+        initMouseListener();
+
+        dwr.engine.setErrorHandler(null);
+
+        $("#dialog-select-playlist").dialog({resizable: true, height: 220, autoOpen: false,
+            buttons: {
+                "<fmt:message key="common.cancel"/>": function() {
+                    $(this).dialog("close");
+                }
+            }});
+
+        $("#progress").slider({max: 0, range: "min"});
+        $("#volume").slider({max: 100, value: 50, animate: "fast", range: "min"});
+        $("#volume").on("slidestop", onVolumeChanged);
+        $("#progress").on("slidestop", onProgressChanged);
+        $(".ui-slider").css("background", $("#dummy").css("background-color"));
+        $("#expand").toggle(!autoHide);
+
+        if (!externalPlayerWithPlaylist) {
+            $("#playlistBody").sortable({
+                stop: function (event, ui) {
+                    var indexes = [];
+                    $("#playlistBody").children().each(function () {
+                        var id = $(this).attr("id").replace("pattern", "");
+                        if (id.length > 0) {
+                            indexes.push(parseInt(id) - 1);
+                        }
+                    });
+                    onRearrange(indexes);
+                },
+                cursor: "move",
+                axis: "y",
+                containment: "parent",
+                helper: function (e, tr) {
+                    var originals = tr.children();
+                    var trclone = tr.clone();
+                    trclone.children().each(function (index) {
+                        // Set cloned cell sizes to match the original sizes
+                        $(this).width(originals.eq(index).width());
+                        $(this).css("maxWidth", originals.eq(index).width());
+                        $(this).css("border-top", "1px solid black");
+                        $(this).css("border-bottom", "1px solid black");
+                    });
+                    return trclone;
+                }
+            });
+        }
+
+        <c:if test="${model.player.web}">createPlayer();</c:if>
+
+        if (jukeboxPlayer || externalPlayer || externalPlayerWithPlaylist) {
+            startTimer();
+            $("#progress").hide();
+            $("#progress-and-duration").hide();
+        }
+        if (externalPlayer || externalPlayerWithPlaylist) {
+            $("#volume").hide();
+            $("#muteOn").hide();
+            $("#muteOff").hide();
+        }
+        if (externalPlayerWithPlaylist) {
+            $("#nextButton").hide();
+            $("#previousButton").hide();
+        }
+        $("#shuffle").toggle(!externalPlayerWithPlaylist);
+
+        getPlayQueue();
+    }
+
+    function initMouseListener() {
+        $("body").mouseleave(function (event) {
+            if (event.clientY < 30) {
+                if (autoHide) {
+                    collapse();
+                }
+                $(".ui-slider-handle").fadeOut();
+            }
+        });
+
+        $("body").mouseenter(function () {
+            $(".ui-slider-handle").fadeIn();
+        });
+
+        $("#expand-target").mouseenter(function () {
+            if (autoHide) {
+                expand();
+            }
+        });
+    }
+
+    function collapse() {
+        collapsed = true;
+        parent.setPlayQueueHeight(95);
+        $("#collapse").hide();
+        $("#expand").toggle(!autoHide);
+    }
+
+    function expand() {
+        collapsed = false;
+        var height = $("body").height() + 25;
+        height = Math.min(height, window.top.innerHeight * 0.8);
+        parent.setPlayQueueHeight(height);
+        $("#expand").hide();
+        $("#collapse").toggle(!autoHide);
+    }
+
+    function startTimer() {
+        <!-- Periodically check if the current song has changed. -->
+        nowPlayingService.getNowPlayingForCurrentPlayer(nowPlayingCallback);
+        setTimeout("startTimer()", 5000);
+    }
+
+    function nowPlayingCallback(nowPlayingInfo) {
+        if (nowPlayingInfo != null && nowPlayingInfo.mediaFileId != currentMediaFileId) {
+            getPlayQueue();
+            currentMediaFileId = nowPlayingInfo.mediaFileId;
+            updateCurrentImage();
+            updateCoverArt(songs[getCurrentSongIndex()]);
+        }
+    }
+
+    function createPlayer() {
+        localPlayer = new Audio();
+
+        localPlayer.addEventListener("ended", function() {setBookmark(); onNext(repeatEnabled)});
+        localPlayer.addEventListener("canplay", function() {updateControls()});
+        localPlayer.addEventListener("canplaythrough", function() {updateControls()});
+        localPlayer.addEventListener("loadeddata", function() {updateControls()});
+        localPlayer.addEventListener("loadedmetadata", function() {updateControls()});
+        localPlayer.addEventListener("loadstart", function() {updateControls()});
+        localPlayer.addEventListener("seeked", function() {setBookmark(); updateControls()});
+        localPlayer.addEventListener("seeking", function() {updateControls()});
+        localPlayer.addEventListener("stalled", function() {updateControls()});
+        localPlayer.addEventListener("suspend", function() {updateControls()});
+        localPlayer.addEventListener("error", function() {updateControls()});
+        localPlayer.addEventListener("waiting", function() {updateControls()});
+        localPlayer.addEventListener("play", function() {updateControls()});
+        localPlayer.addEventListener("playing", function() {updateControls()});
+        localPlayer.addEventListener("pause", function() {setBookmark(); updateControls()});
+        localPlayer.addEventListener("volumechange", function() {updateControls()});
+        localPlayer.addEventListener("timeupdate", function() {updateProgressBar()});
+
+        localPlayer.volume = 0.66;
+    }
+
+    function updateControls() {
+        var ready = localPlayer.readyState == localPlayer.HAVE_FUTURE_DATA ||
+                    localPlayer.readyState == localPlayer.HAVE_ENOUGH_DATA ||
+                    localPlayer.networkState == localPlayer.NETWORK_NO_SOURCE;
+
+        var paused = localPlayer.paused;
+        $("#startButton").toggle(ready && paused);
+        $("#stopButton").toggle(ready && !paused);
+        $("#bufferButton").toggle(!ready);
+        toggleSpinner(ready && !paused);
+
+        $("#volume").slider("option", "value", Math.round(localPlayer.volume * 100));
+
+        var muted = localPlayer.muted;
+        $("#muteOn").toggle(!muted);
+        $("#muteOff").toggle(muted);
+    }
+
+    function toggleSpinner(spin) {
+        $(".fa-circle-o-notch").toggleClass("fa-spin", spin);
+    }
+
+    function updateProgressBar() {
+        var position = Math.round(localPlayer.currentTime);
+        var duration = localPlayer.duration;
+
+        if (isNaN(duration) || !isFinite(duration)) {
+            var currentSong = songs[getCurrentSongIndex()];
+            duration = currentSong ? currentSong.duration : 0;
+        } else {
+            duration = Math.round(duration);
+        }
+
+        if (position != currentPosition) {
+            currentPosition = position;
+            $("#progress").slider("option", "value", position * 1000);
+
+            if (position == 2) {
+                playQueueService.scrobble(songs[getCurrentSongIndex()].id, false);
+            }
+            else if (duration > 0 && position == Math.round(duration / 2)) {
+                playQueueService.scrobble(songs[getCurrentSongIndex()].id, true);
+            }
+
+            if (position % 10 == 0) {
+                setBookmark();
+            }
+        }
+
+        $("#progress").slider("option", "max", duration * 1000);
+        $("#progress-text").html(formatDuration(position));
+        $("#duration-text").html(formatDuration(duration));
+    }
+
+    function setBookmark() {
+        var song = songs[getCurrentSongIndex()];
+        if (!song.bookmarkable) {
+            return;
+        }
+        var positionMillis = Math.round(localPlayer.currentTime * 1000);
+        song.bookmarkPositionMillis = positionMillis;
+        playQueueService.setBookmark(song.id, positionMillis, function (updated) {
+            if (!updated) {
+                song.bookmarkPositionMillis = null;
+            }
+        });
+    }
+
+    function formatDuration(duration) {
+        var hours = Math.floor(duration / 3600);
+        duration = duration % 3600;
+        var minutes = Math.floor(duration / 60);
+        var seconds = Math.floor(duration % 60);
+
+        var result = "";
+        if (hours > 0) {
+            result += hours + ":";
+            if (minutes < 10) {
+                result += "0";
+            }
+        }
+        result += minutes + ":";
+        if (seconds < 10) {
+            result += "0";
+        }
+        result += seconds;
+
+        return result;
+    }
+
+    function getPlayQueue() {
+        playQueueService.getPlayQueue(playQueueCallback);
+    }
+
+    function onClear() {
+        var ok = true;
+        <c:if test="${model.partyMode}">
+        ok = confirm("<fmt:message key="playlist.confirmclear"/>");
+        </c:if>
+        if (ok) {
+            playQueueService.clear(playQueueCallback);
+        }
+    }
+
+    function onStart() {
+        if (castPlayer.castSession) {
+            castPlayer.playCast();
+        } else if (localPlayer) {
+            if (localPlayer.ended && getCurrentSongIndex() == songs.length -1) {
+                skip(0, 0, true, true);
+            } else {
+                localPlayer.play();
+            }
+
+        } else {
+            playQueueService.start(playQueueCallback);
+        }
+    }
+
+    function onStop() {
+        if (castPlayer.castSession) {
+            castPlayer.pauseCast();
+        } else if (localPlayer) {
+            localPlayer.pause();
+        } else {
+            playQueueService.stop(playQueueCallback);
+        }
+    }
+
+    function onVolumeChanged() {
+        var value = parseInt($("#volume").slider("option", "value"));
+        if (castPlayer.castSession) {
+            castPlayer.setCastVolume(value / 100, false);
+        } else if (localPlayer) {
+            localPlayer.volume = value / 100.0;
+            localPlayer.muted = false;
+        } else if (jukeboxPlayer) {
+            playQueueService.setJukeboxGain(value / 100);
+        }
+    }
+
+    function onProgressChanged() {
+        var value = parseInt($("#progress").slider("option", "value") / 1000);
+        if (localPlayer && !castPlayer.castSession && Math.round(localPlayer.currentTime) != value) {
+            localPlayer.currentTime = value;
+            localPlayer.play();
+        }
+    }
+
+    function onMute(mute) {
+        $("#muteOn").toggle(!mute);
+        $("#muteOff").toggle(mute);
+
+        if (castPlayer.castSession) {
+            castPlayer.castMute(mute);
+        } else if (localPlayer) {
+            localPlayer.muted = mute;
+        } else if (jukeboxPlayer) {
+            playQueueService.setJukeboxMute(mute);
+        }
+    }
+
+    function keyboardShortcut(action) {
+        if (action == "togglePlayPause") {
+            if ($("#startButton").is(":visible")) {
+                $("#startButton").click();
+            } else if ($("#stopButton").is(":visible")) {
+                $("#stopButton").click();
+            }
+        } else if (action == "previous" && $("#previousButton").is(":visible")) {
+            $("#previousButton").click();
+        } else if (action == "next" && $("#nextButton").is(":visible")) {
+            $("#nextButton").click();
+        } else if (action == "volumeDown" && $("#volume").is(":visible")) {
+            var volume = parseInt($("#volume").slider("option", "value"));
+            $("#volume").slider("option", "value", Math.max(0, volume - 5));
+            onVolumeChanged();
+        } else if (action == "volumeUp" && $("#volume").is(":visible")) {
+            var volume = parseInt($("#volume").slider("option", "value"));
+            $("#volume").slider("option", "value", Math.min(100, volume + 5));
+            onVolumeChanged();
+        } else if (action == "seekForward") {
+            var position = parseInt($("#progress").slider("option", "value"));
+            var duration = parseInt($("#progress").slider("option", "max"));
+            $("#progress").slider("option", "value", Math.min(duration, position + 1000));
+            onProgressChanged();
+        } else if (action == "seekBackward") {
+            var position = parseInt($("#progress").slider("option", "value"));
+            $("#progress").slider("option", "value", Math.max(0, position - 1000));
+            onProgressChanged();
+        } else if (action == "star") {
+            if ($("#starCurrentSong").is(":visible")) {
+                $("#starCurrentSong").click();
+            } else if ($("#unstarCurrentSong").is(":visible")) {
+                $("#unstarCurrentSong").click();
+            }
+        } else if (action == "togglePlayQueue") {
+            collapsed ? expand() : collapse();
+        }
+    }
+
+    function onNext(wrap) {
+        var index = parseInt(getCurrentSongIndex()) + 1;
+        if (wrap) {
+            index = index % songs.length;
+        }
+        skip(index, 0, true, true);
+    }
+
+    function onPrevious() {
+        if (localPlayer && !castPlayer.castSession && localPlayer.currentTime > 4.0) {
+            skip(parseInt(getCurrentSongIndex()), 0, true, false);
+        } else {
+            skip(Math.max(0, parseInt(getCurrentSongIndex()) - 1), 0, true, true);
+        }
+    }
+    function onPlay(id) {
+        playQueueService.play(id, playQueueCallback);
+    }
+    function onPlaySingle(id) {
+        playQueueService.playSingle(id, playQueueCallback);
+    }
+    function onPlayShuffle(albumListType, offset, size, genre, decade) {
+        playQueueService.playShuffle(albumListType, offset, size, genre, decade, playQueueCallback);
+    }
+    function onPlayPlaylist(id, append, index) {
+        playQueueService.playPlaylist(id, append, index, playQueueCallback);
+        if (append) {
+            toast("<fmt:message key="main.addlast.toast"/>");
+        }
+    }
+    function onShufflePlaylist(id) {
+        playQueueService.shufflePlaylist(id, playQueueCallback);
+    }
+    function onPlayTopSong(id, index) {
+        playQueueService.playTopSong(id, index, playQueueCallback);
+    }
+    function onPlayPodcastChannel(id, append) {
+        playQueueService.playPodcastChannel(id, append, playQueueCallback);
+        if (append) {
+            toast("<fmt:message key="main.addlast.toast"/>");
+        }
+    }
+    function onPlayPodcastEpisode(id) {
+        playQueueService.playPodcastEpisode(id, playQueueCallback);
+    }
+    function onPlayNewestPodcastEpisode(index) {
+        playQueueService.playNewestPodcastEpisode(index, playQueueCallback);
+    }
+    function onPlayStarred() {
+        playQueueService.playStarred(playQueueCallback);
+    }
+    function onPlayRandom(id, count) {
+        playQueueService.playRandom(id, count, playQueueCallback);
+    }
+    function onPlaySimilar(id, count) {
+        playQueueService.playSimilar(id, count, playQueueCallback);
+    }
+    function onAdd(id) {
+        playQueueService.add(id, playQueueCallback);
+        toast("<fmt:message key="main.addlast.toast"/>");
+    }
+    function onAddNext(id) {
+        playQueueService.addAt(id, getCurrentSongIndex() + 1, playQueueCallback);
+        toast("<fmt:message key="main.addnext.toast"/>");
+    }
+    function onShuffle() {
+        playQueueService.shuffle(playQueueCallback);
+        toast("<fmt:message key="playlist.toast.shuffle"/>")
+    }
+    function onStar(index) {
+        playQueueService.toggleStar(index, playQueueCallback);
+    }
+    function onStarCurrentSong(star) {
+        var i = getCurrentSongIndex();
+        if (i != -1) {
+            onStar(i);
+            $("#starCurrentSong").toggle(!star);
+            $("#unstarCurrentSong").toggle(star);
+        }
+    }
+    function onRemove(index) {
+        playQueueService.remove(index, playQueueCallback);
+    }
+    function onRearrange(indexes) {
+        playQueueService.rearrange(indexes, playQueueCallback);
+    }
+    function onToggleRepeat(repeat) {
+        playQueueService.toggleRepeat(repeat, playQueueCallback);
+    }
+    function onUndo() {
+        playQueueService.undo(playQueueCallback);
+    }
+    function onSavePlayQueue() {
+        var positionMillis = localPlayer ? Math.round(1000.0 * localPlayer.currentTime) : 0;
+        playQueueService.savePlayQueue(getCurrentSongIndex(), positionMillis);
+        toast("<fmt:message key="playlist.toast.saveplayqueue"/>");
+    }
+    function onLoadPlayQueue() {
+        playQueueService.loadPlayQueue(playQueueCallback);
+    }
+    function onSavePlaylist() {
+        playlistService.createPlaylistForPlayQueue(function (playlistId) {
+            top.main.location.href = "playlist.view?id=" + playlistId;
+            toast("<fmt:message key="playlist.toast.saveasplaylist"/>");
+        });
+    }
+    function onAppendPlaylist() {
+        playlistService.getWritablePlaylists(playlistCallback);
+    }
+    function playlistCallback(playlists) {
+        $("#dialog-select-playlist-list").empty();
+        for (var i = 0; i < playlists.length; i++) {
+            var playlist = playlists[i];
+            $("<p class='dense'><b><a href='#' onclick='appendPlaylist(" + playlist.id + ")'>" + escapeHtml(playlist.name)
+                    + "</a></b></p>").appendTo("#dialog-select-playlist-list");
+        }
+        $("#dialog-select-playlist").dialog("open");
+    }
+    function appendPlaylist(playlistId) {
+        $("#dialog-select-playlist").dialog("close");
+
+        var mediaFileIds = new Array();
+        for (var i = 0; i < songs.length; i++) {
+            if ($("#songIndex" + (i + 1)).is(":checked")) {
+                mediaFileIds.push(songs[i].id);
+            }
+        }
+        playlistService.appendToPlaylist(playlistId, mediaFileIds, function (){
+            top.main.location.href = "playlist.view?id=" + playlistId;
+            toast("<fmt:message key="playlist.toast.appendtoplaylist"/>");
+        });
+    }
+    function playQueueCallback(playQueue) {
+        songs = playQueue.entries;
+        repeatEnabled = playQueue.repeatEnabled;
+
+        $("#repeatOn").toggle(!repeatEnabled);
+        $("#repeatOff").toggle(repeatEnabled);
+
+        if (songs.length == 0) {
+            $("#songCountAndDuration").html("");
+            $("#empty").show();
+            $("#playQueueTable").hide();
+        } else {
+            $("#songCountAndDuration").html(songs.length + " <fmt:message key="playlist2.songs"/>&nbsp;&nbsp;&bull;&nbsp;&nbsp;" + playQueue.durationAsString);
+            $("#empty").hide();
+            $("#playQueueTable").show();
+        }
+
+        // Delete all the rows except for the "pattern" row
+        dwr.util.removeAllRows("playlistBody", { filter:function(tr) {
+            return (tr.id != "pattern");
+        }});
+
+        // Create a new set cloned from the pattern row
+        for (var i = 0; i < songs.length; i++) {
+            var song  = songs[i];
+            var id = i + 1;
+            dwr.util.cloneNode("pattern", { idSuffix:id });
+            if ($("#trackNumber" + id)) {
+                $("#trackNumber" + id).html(song.trackNumber);
+            }
+            $("#starSong" + id).addClass(song.starred ? "fa-star starred" : "fa-star-o");
+            if ($("#title" + id)) {
+                $("#title" + id).html(song.title);
+                $("#title" + id).attr("title", song.title);
+            }
+            if ($("#titleUrl" + id)) {
+                $("#titleUrl" + id).html(song.title);
+                $("#titleUrl" + id).attr("title", song.title);
+                $("#titleUrl" + id).click(function () {skip(this.id.substring(8) - 1, 0, true, true)});
+            }
+            if ($("#album" + id)) {
+                $("#album" + id).html(song.album);
+                $("#album" + id).attr("title", song.album);
+                $("#albumUrl" + id).attr("href", song.albumUrl);
+            }
+            if ($("#artist" + id)) {
+                $("#artist" + id).html(song.artist);
+                $("#artist" + id).attr("title", song.artist);
+            }
+            if ($("#genre" + id)) {
+                $("#genre" + id).html(song.genre);
+            }
+            if ($("#year" + id)) {
+                $("#year" + id).html(song.year);
+            }
+            if ($("#bitRate" + id)) {
+                $("#bitRate" + id).html(song.bitRate);
+            }
+            if ($("#duration" + id)) {
+                $("#duration" + id).html(song.durationAsString);
+            }
+            if ($("#format" + id)) {
+                $("#format" + id).html(song.sourceFormat);
+            }
+            if ($("#fileSize" + id)) {
+                $("#fileSize" + id).html(song.fileSize);
+            }
+
+            // Note: show() method causes page to scroll to top.
+            $("#pattern" + id).css("display", "table-row");
+        }
+
+        if (playQueue.sendM3U) {
+            parent.frames.main.location.href="play.m3u?";
+        }
+
+        if (jukeboxPlayer) {
+            $("#volume").slider("option", "value", Math.floor(playQueue.jukeboxGain * 100));
+            $("#muteOn").toggle(!playQueue.jukeboxMute);
+            $("#muteOff").toggle(playQueue.jukeboxMute);
+        }
+
+        if (localPlayer) {
+            triggerLocalPlayer(playQueue.startPlayerAt, playQueue.startPlayerAtPosition);
+        } else {
+            $("#startButton").toggle(!playQueue.stopEnabled);
+            $("#stopButton").toggle(playQueue.stopEnabled);
+            toggleSpinner(playQueue.stopEnabled);
+            if (playQueue.startPlayerAt != -1) {
+                currentMediaFileId = songs[playQueue.startPlayerAt].id;
+                updateCoverArt(songs[playQueue.startPlayerAt]);
+            }
+            updateCurrentImage();
+        }
+    }
+
+    function triggerLocalPlayer(index, positionMillis) {
+
+        // Load first song (but don't play) if this is the initial case.
+        if (index == -1 &&
+            (localPlayer.networkState == localPlayer.NETWORK_EMPTY || localPlayer.networkState == localPlayer.NETWORK_NO_SOURCE) &&
+            localPlayer.readyState == localPlayer.HAVE_NOTHING) {
+            skip(0, 0, false, false);
+        } else {
+            skip(index, 0, true, true);
+        }
+
+        if (positionMillis != 0) {
+            localPlayer.currentTime = positionMillis / 1000;
+        }
+        updateCurrentImage();
+        if (songs.length == 0) {
+            localPlayer.pause();
+            localPlayer.src = "";
+            updateCoverArt(null);
+            updateProgressBar();
+        }
+    }
+
+    function updateCoverArt(song) {
+        var showAlbum = function () {
+            parent.frames.main.location.href = "main.view?id=" + song.id
+        };
+        $("#coverArt").attr("src", song ? "coverArt.view?id=" + song.id + "&auth=" + song.hash + "&size=160" : "");
+        $("#songName").text(song && song.title ? song.title : "");
+        $("#artistName").text(song && song.artist ? song.artist : "");
+        $("#songName").off("click");
+        $("#artistName").off("click");
+        $("#coverArt").off("click");
+        $("#coverArt").css("visibility", song ? "visible" : "hidden");
+        if (song) {
+            $("#songName").click(showAlbum);
+            $("#artistName").click(showAlbum);
+            $("#coverArt").click(showAlbum);
+        }
+        var starred = song != null && song.starred;
+        $("#starCurrentSong").toggle(!starred);
+        $("#unstarCurrentSong").toggle(starred);
+    }
+
+    function skip(index, position, play, skipToBookmark) {
+        if (index < 0 || index >= songs.length) {
+            return;
+        }
+
+        var song = songs[index];
+        currentMediaFileId = song.id;
+        updateCurrentImage();
+
+        if (castPlayer.castSession) {
+            castPlayer.loadCastMedia(song, position);
+        } else if (localPlayer) {
+            var url = song.streamUrl + "&scrobble=false";
+            console.log(url);
+            localPlayer.src = url;
+            if (play) {
+                startLocalPlayerAt(skipToBookmark && song.bookmarkPositionMillis ? Math.round(song.bookmarkPositionMillis / 1000) : null);
+            }
+        } else {
+            playQueueService.skip(index, playQueueCallback);
+        }
+
+        updateWindowTitle(song);
+        updateCoverArt(song);
+
+        if (play && ${model.notify}) {
+            showNotification(song);
+        }
+    }
+
+    function startLocalPlayerAt(positionSeconds) {
+        var promise = localPlayer.play();
+        if (promise !== undefined) {
+            promise.then(function () {
+                if (positionSeconds) {
+                    localPlayer.currentTime = positionSeconds;
+                }
+            });
+        } else if (positionSeconds) {
+            localPlayer.currentTime = positionSeconds;
+        }
+    }
+
+    function updateWindowTitle(song) {
+        var title = "";
+        if (song.title) {
+            title += song.title;
+        }
+        if (song.title && song.artist) {
+            title += " - ";
+        }
+        if (song.artist) {
+            title += song.artist;
+        }
+        top.document.title = title  + " - Subsonic";
+    }
+
+    function showNotification(song) {
+        if (!("Notification" in window)) {
+            return;
+        }
+        if (Notification.permission === "granted") {
+            createNotification(song);
+        }
+        else if (Notification.permission !== 'denied') {
+            Notification.requestPermission(function (permission) {
+                Notification.permission = permission;
+                if (permission === "granted") {
+                    createNotification(song);
+                }
+            });
+        }
+    }
+
+    function createNotification(song) {
+        var body = "";
+        if (song.artist) {
+            body += song.artist;
+        }
+        if (song.artist && song.album) {
+            body += " - ";
+        }
+        if (song.album) {
+            body += song.album;
+        }
+
+        var n = new Notification(song.title, {
+            tag: "subsonic",
+            body: body,
+            icon: "coverArt.view?id=" + song.id + "&auth=" + song.hash + "&size=160"
+        });
+        n.onshow = function() {
+            setTimeout(function() {n.close()}, 5000);
+        }
+    }
+
+    function updateCurrentImage() {
+        for (var i = 0; i < songs.length; i++) {
+            var song  = songs[i];
+            var id = i + 1;
+            var image = $("#currentImage" + id);
+
+            if (image) {
+                image.toggle(song.id == currentMediaFileId);
+            }
+        }
+    }
+
+    function getCurrentSongIndex() {
+        for (var i = 0; i < songs.length; i++) {
+            if (songs[i].id == currentMediaFileId) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    <!-- actionSelected() is invoked when the users selects from the "More actions..." combo box. -->
+    function actionSelected(id) {
+        var selectedIndexes = getSelectedIndexes();
+        if (id == "top") {
+            return;
+        } else if (id == "savePlayQueue") {
+            onSavePlayQueue();
+        } else if (id == "loadPlayQueue") {
+            onLoadPlayQueue();
+        } else if (id == "downloadPlaylist") {
+            location.href = "download.view?player=${model.player.id}";
+        } else if (id == "download" && selectedIndexes != "") {
+            location.href = "download.view?player=${model.player.id}&" + selectedIndexes;
+        } else if (id == "appendPlaylist" && selectedIndexes != "") {
+            onAppendPlaylist();
+        }
+        $("#moreActions").prop("selectedIndex", 0);
+    }
+
+    function selectAll(b) {
+        var selected = $("#selectAll").is(":checked");
+        $('.song-checkbox').prop('checked', selected);
+    }
+
+    function getSelectedIndexes() {
+        var result = "";
+        for (var i = 0; i < songs.length; i++) {
+            if ($("#songIndex" + (i + 1)).is(":checked")) {
+                result += "i=" + i + "&";
+            }
+        }
+        return result;
+    }
+
+    function toast(text) {
+        $().toastmessage("showToast", {
+            text     : text,
+            sticky   : false,
+            position : "middle-center",
+            type     : "success"
+        });
+    }
+
+    </script>
+</head>
+
+<body class="bgcolor2 playlistframe" onload="init()">
+
+<span id="dummy" class="bgcolor1" style="display:none"></span>
+
+<div class="bgcolor2" style="position:fixed; bottom:0; width:100%; z-index:2">
+    <div style="display:flex; margin-top:5px; margin-bottom:7px">
+        <img id="coverArt">
+        <div class="ellipsis" style="flex-grow:1">
+            <div id="progress"></div>
+
+            <div id="expand-target" class="ellipsis" style="display:flex; align-items:center; margin-left:10px">
+                <div class="ellipsis" style="display:flex; flex:1; align-items:center; margin-right:30px">
+                    <div class="ellipsis" style="flex:1">
+                        <div><a id="songName" class="ellipsis"></a></div>
+                        <div><a id="artistName" class="ellipsis"></a></div>
+                    </div>
+                    <i id="starCurrentSong" class="material-icons" title="<fmt:message key="more.keyboard.star"/>" onclick="onStarCurrentSong(true)">star_border</i>
+                    <i id="unstarCurrentSong" class="material-icons starred" title="<fmt:message key="more.keyboard.star"/>" onclick="onStarCurrentSong(false)">star</i>
+                    <i id="repeatOn" class="material-icons" title="<fmt:message key="playlist.repeat_off"/>" onclick="onToggleRepeat(true)">repeat</i>
+                    <i id="repeatOff" class="material-icons" title="<fmt:message key="playlist.repeat_on"/>" onclick="onToggleRepeat(false)">repeat</i>
+                    <i id="shuffle" class="material-icons" title="<fmt:message key="playlist.shuffle"/>" onclick="onShuffle()">shuffle</i>
+                </div>
+
+                <i id="previousButton" class="fa fa-step-backward" onclick="onPrevious()"></i>
+                <span id="startButton" class="fa-stack fa-lg" onclick="onStart()">
+                    <i class="fa fa-circle fa-stack-2x fa-inverse"></i>
+                    <i class="fa fa-play-circle fa-stack-2x"></i>
+                </span>
+                <span id="stopButton" class="fa-stack fa-lg" onclick="onStop()" style="display:none">
+                    <i class="fa fa-circle fa-stack-2x fa-inverse"></i>
+                    <i class="fa fa-pause-circle fa-stack-2x"></i>
+                </span>
+                <span id="bufferButton" class="fa-stack fa-lg" style="display:none">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-refresh fa-stack-1x fa-inverse fa-spin"></i>
+                </span>
+                <i id="nextButton" class="fa fa-step-forward" onclick="onNext(repeatEnabled)"></i>
+                <div style="flex:1; display:flex; align-items:center; margin-left:30px">
+                    <i id="expand" class="material-icons" title="<fmt:message key="more.keyboard.playqueue"/>" onclick="expand()">queue_music</i>
+                    <i id="collapse" class="material-icons" title="<fmt:message key="more.keyboard.playqueue"/>" onclick="collapse()">queue_music</i>
+                    <i id="castOn" class="material-icons" title="<fmt:message key="playlist.startcast"/>" onclick="castPlayer.launchCastApp()">cast</i>
+                    <i id="castOff" class="material-icons" title="<fmt:message key="playlist.stopcast"/>" onclick="castPlayer.stopCastApp()">cast_connected</i>
+                    <div id="progress-and-duration" class="detail" style="flex:1; text-align:right">
+                        <span id="progress-text">0:00</span> /
+                        <span id="duration-text">0:00</span>
+                    </div>
+                </div>
+                <i id="muteOn" class="fa fa-volume-up fa-fw" onclick="onMute(true)"></i>
+                <i id="muteOff" class="fa fa-volume-off fa-fw" onclick="onMute(false)" style="display:none"></i>
+                <div id="volume"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div style="display:flex; align-items:center; margin-top:1.5em">
+    <h2 style="margin:0; padding-right:5em"><fmt:message key="playlist.more.playlist"/></h2>
+    <c:if test="${model.user.settingsRole and fn:length(model.players) gt 1}">
+        <select name="player" style="margin-right: 2.5em" onchange="location='playQueue.view?player=' + options[selectedIndex].value;">
+            <c:forEach items="${model.players}" var="player">
+                <option ${player.id eq model.player.id ? "selected" : ""} value="${player.id}">${player.shortDescription}</option>
+            </c:forEach>
+        </select>
+    </c:if>
+
+    <c:if test="${model.player.web or model.player.jukebox or model.player.external}">
+        <div class="header ellipsis" style="padding-right:1.5em"><i class="fa fa-trash icon"></i>&nbsp;<a href="javascript:onClear()"><fmt:message key="playlist.clear"/></a></div>
+        <div class="header ellipsis" style="padding-right:1.5em"><i class="fa fa-undo icon"></i>&nbsp;<a href="javascript:onUndo()"><fmt:message key="playlist.undo"/></a></div>
+    </c:if>
+
+    <c:if test="${model.user.settingsRole}">
+        <div class="header ellipsis" style="padding-right:1.5em"><i class="fa fa-cog icon"></i>&nbsp;<a href="playerSettings.view?id=${model.player.id}" target="main"><fmt:message key="playlist.settings"/></a></div>
+    </c:if>
+
+    <c:if test="${model.player.web or model.player.jukebox or model.player.external}">
+        <c:if test="${model.user.shareRole}">
+            <div class="header ellipsis" style="padding-right:1.5em"><i class="fa fa-share-alt icon"></i>&nbsp;<a href="createShare.view?player=${model.player.id}" target="main"><fmt:message key="main.more.share"/></a></div>
+        </c:if>
+        <div class="header ellipsis" style="padding-right:1.5em"><i class="fa fa-music icon"></i>&nbsp;<a href="javascript:onSavePlaylist()"><fmt:message key="playlist.save"/></a></div>
+
+        <select id="moreActions" onchange="actionSelected(this.options[selectedIndex].id)">
+            <option id="top" selected="selected"><fmt:message key="playlist.more"/></option>
+            <optgroup label="<fmt:message key="playlist.more.playlist"/>">
+                <option id="savePlayQueue"><fmt:message key="playlist.saveplayqueue"/></option>
+                <option id="loadPlayQueue"><fmt:message key="playlist.loadplayqueue"/></option>
+                <c:if test="${model.user.downloadRole}">
+                    <option id="downloadPlaylist"><fmt:message key="common.download"/></option>
+                </c:if>
+            </optgroup>
+            <optgroup label="<fmt:message key="playlist.more.selection"/>">
+                <option id="appendPlaylist"><fmt:message key="playlist.append"/></option>
+                <c:if test="${model.user.downloadRole}">
+                    <option id="download"><fmt:message key="common.download"/></option>
+                </c:if>
+            </optgroup>
+        </select>
+    </c:if>
+    <h2 id="songCountAndDuration" style="text-align:right; margin:0; padding-left:2em; padding-right:1em; flex-grow:1"></h2>
+</div>
+
+<p id="empty" style="padding-top:1em"><em><fmt:message key="playlist.empty"/></em></p>
+
+<table id="playQueueTable" class="music indent">
+    <thead>
+    <tr></tr>
+    <tr>
+        <th colspan="2"></th>
+        <th class="fit center"><input type="checkbox" id="selectAll" class="checkbox" onclick="selectAll()"/></th>
+        <c:if test="${model.visibility.trackNumberVisible}">
+            <th class="fit right">#</th>
+        </c:if>
+        <th class="truncate"><fmt:message key="lyrics.song"/></th>
+        <c:if test="${model.visibility.albumVisible}">
+            <th class="truncate"><fmt:message key="personalsettings.album"/></th>
+        </c:if>
+        <c:if test="${model.visibility.artistVisible}">
+            <th class="truncate"><fmt:message key="personalsettings.artist"/></th>
+        </c:if>
+        <c:if test="${model.visibility.durationVisible}">
+            <th class="fit center"><i class="fa fa-lg fa-clock-o"></i></th>
+        </c:if>
+        <c:if test="${model.visibility.genreVisible}">
+            <th class="fit left"><fmt:message key="personalsettings.genre"/></th>
+        </c:if>
+        <c:if test="${model.visibility.yearVisible}">
+            <th class="fit left"><fmt:message key="personalsettings.year"/></th>
+        </c:if>
+        <c:if test="${model.visibility.formatVisible}">
+            <th class="fit left"><fmt:message key="personalsettings.format"/></th>
+        </c:if>
+        <c:if test="${model.visibility.fileSizeVisible}">
+            <th class="fit left"><fmt:message key="personalsettings.filesize"/></th>
+        </c:if>
+        <c:if test="${model.visibility.bitRateVisible}">
+            <th class="fit left"><fmt:message key="personalsettings.bitrate"/></th>
+        </c:if>
+    </tr>
+    </thead>
+    <tbody id="playlistBody" style="cursor:pointer">
+        <tr id="pattern" style="display:none;margin:0;padding:0;border:0">
+            <td class="fit">
+                <i id="starSong" class="fa clickable" onclick="onStar(this.id.substring(8) - 1)"></i>
+            </td>
+            <c:if test="${not model.player.externalWithPlaylist}">
+                <td class="fit">
+                    <i id="removeSong" class="fa fa-remove clickable icon" onclick="onRemove(this.id.substring(10) - 1)" title="<fmt:message key="playlist.remove"/>"></i>
+                </td>
+            </c:if>
+            <td class="fit center"><input type="checkbox" class="checkbox song-checkbox" id="songIndex"></td>
+            <c:if test="${model.visibility.trackNumberVisible}">
+                <td class="fit right"><span class="detail" id="trackNumber">1</span></td>
+            </c:if>
+
+            <td class="truncate">
+                <i id="currentImage" class="fa fa-circle-o-notch fa-spin icon" style="display:none;margin-right:0.5em"></i>
+                <c:choose>
+                    <c:when test="${model.player.externalWithPlaylist}">
+                        <span id="title" class="songTitle">Title</span>
+                    </c:when>
+                    <c:otherwise>
+                        <span class="songTitle"><a id="titleUrl" href="javascript:void(0)">Title</a></span>
+                    </c:otherwise>
+                </c:choose>
+            </td>
+
+            <c:if test="${model.visibility.albumVisible}">
+                <td class="truncate"><a id="albumUrl" target="main"><span id="album" class="detail">Album</span></a></td>
+            </c:if>
+            <c:if test="${model.visibility.artistVisible}">
+                <td class="truncate"><span id="artist" class="detail">Artist</span></td>
+            </c:if>
+            <c:if test="${model.visibility.durationVisible}">
+                <td class="fit right"><span id="duration" class="detail">Duration</span></td>
+            </c:if>
+            <c:if test="${model.visibility.genreVisible}">
+                <td class="truncate"><span id="genre" class="detail">Genre</span></td>
+            </c:if>
+            <c:if test="${model.visibility.yearVisible}">
+                <td class="fit left"><span id="year" class="detail">Year</span></td>
+            </c:if>
+            <c:if test="${model.visibility.formatVisible}">
+                <td class="fit left"><span id="format" class="detail">Format</span></td>
+            </c:if>
+            <c:if test="${model.visibility.fileSizeVisible}">
+                <td class="fit left"><span id="fileSize" class="detail">Format</span></td>
+            </c:if>
+            <c:if test="${model.visibility.bitRateVisible}">
+                <td class="fit left"><span id="bitRate" class="detail">Bit Rate</span></td>
+            </c:if>
+        </tr>
+    </tbody>
+</table>
+
+<div style="height:100px"></div>
+
+<div id="dialog-select-playlist" title="<fmt:message key="main.addtoplaylist.title"/>" style="display: none;">
+    <p><fmt:message key="main.addtoplaylist.text"/></p>
+    <div id="dialog-select-playlist-list"></div>
+</div>
+
+</body></html>

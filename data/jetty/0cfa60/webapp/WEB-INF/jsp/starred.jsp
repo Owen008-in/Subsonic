@@ -1,0 +1,241 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="iso-8859-1"%>
+
+<html><head>
+    <%@ include file="head.jsp" %>
+    <%@ include file="jquery.jsp" %>
+    <style type="text/css">
+        .starred-header {padding-top: 2em;}
+    </style>
+    <script type="text/javascript" src="<c:url value="/script/scripts-2.0.js"/>"></script>
+    <script type="text/javascript" src="<c:url value='/dwr/util.js'/>"></script>
+    <script type="text/javascript" src="<c:url value="/dwr/engine.js"/>"></script>
+    <script type="text/javascript" src="<c:url value="/dwr/interface/starService.js"/>"></script>
+    <script type="text/javascript" src="<c:url value="/dwr/interface/playlistService.js"/>"></script>
+    <script type="text/javascript" language="javascript">
+
+        function toggleStar(mediaFileId, element) {
+            starService.star(mediaFileId, !$(element).hasClass("fa-star"));
+            $(element).toggleClass("fa-star fa-star-o starred");
+        }
+
+        function onSavePlaylist() {
+            playlistService.createPlaylistForStarredSongs(function (playlistId) {
+                top.main.location.href = "playlist.view?id=" + playlistId;
+                $().toastmessage("showSuccessToast", "<fmt:message key="playlist.toast.saveasplaylist"/>");
+            });
+        }
+
+        function onPlayAll() {
+            top.playQueue.onPlayStarred();
+        }
+
+    </script>
+</head>
+<body class="mainframe bgcolor1">
+
+<div style="display:flex; align-items:center">
+    <h1 style="flex-grow:1">
+        <i class="fa fa-star fa-lg icon"></i>&nbsp;&nbsp;<fmt:message key="starred.title"/>
+    </h1>
+    <div>
+        <c:import url="viewSelector.jsp">
+            <c:param name="changeViewUrl" value="starred.view?viewAsList=${not model.viewAsList}"/>
+            <c:param name="viewAsList" value="${model.viewAsList}"/>
+        </c:import>
+    </div>
+</div>
+
+<c:if test="${empty model.artists and empty model.albums and empty model.songs}">
+    <p style="padding-top: 1em"><em><fmt:message key="starred.empty"/></em></p>
+</c:if>
+
+<c:if test="${not empty model.artists}">
+    <h2 class="starred-header"><fmt:message key="search.hits.artists"/></h2>
+
+    <c:choose>
+        <c:when test="${model.viewAsList}">
+            <table class="music indent">
+                <tr></tr>
+
+                <c:forEach items="${model.artists}" var="artist">
+
+                    <c:url value="/main.view" var="mainUrl">
+                        <c:param name="id" value="${artist.id}"/>
+                    </c:url>
+
+                    <tr>
+                        <c:import url="playButtons.jsp">
+                            <c:param name="id" value="${artist.id}"/>
+                            <c:param name="playEnabled" value="${model.user.streamRole and not model.partyModeEnabled}"/>
+                            <c:param name="addEnabled" value="${model.user.streamRole and (not model.partyModeEnabled or not artist.directory)}"/>
+                            <c:param name="starEnabled" value="true"/>
+                            <c:param name="starred" value="${not empty artist.starredDate}"/>
+                            <c:param name="asTable" value="true"/>
+                        </c:import>
+                        <td class="truncate">
+                            <a href="${mainUrl}">${fn:escapeXml(artist.name)}</a>
+                        </td>
+                    </tr>
+                </c:forEach>
+            </table>
+        </c:when>
+        <c:otherwise>
+            <div style="padding-top:0.5em">
+                <c:forEach items="${model.artists}" var="artist" varStatus="loopStatus">
+                    <div class="albumThumb">
+                        <c:import url="artistImage.jsp">
+                            <c:param name="artistId" value="${artist.id}"/>
+                            <c:param name="caption" value="${fn:escapeXml(artist.name)}"/>
+                            <c:param name="size" value="${model.coverArtSize}"/>
+                            <c:param name="showLink" value="true"/>
+                        </c:import>
+                    </div>
+                </c:forEach>
+            </div>
+        </c:otherwise>
+    </c:choose>
+</c:if>
+
+<c:if test="${not empty model.albums}">
+    <h2 class="starred-header"><fmt:message key="search.hits.albums"/></h2>
+
+    <c:choose>
+        <c:when test="${model.viewAsList}">
+            <table class="music indent">
+                <tr>
+                    <th colspan="5"></th>
+                    <th class="truncate"><fmt:message key="personalsettings.album"/></th>
+                    <th class="truncate"><fmt:message key="personalsettings.artist"/></th>
+                    <th class="fit left"><fmt:message key="personalsettings.year"/></th>
+                </tr>
+                <c:forEach items="${model.albums}" var="album">
+                    <tr>
+                        <c:import url="playButtons.jsp">
+                            <c:param name="id" value="${album.id}"/>
+                            <c:param name="playEnabled" value="${model.user.streamRole and not model.partyModeEnabled}"/>
+                            <c:param name="addEnabled" value="${model.user.streamRole and not model.partyModeEnabled}"/>
+                            <c:param name="starEnabled" value="true"/>
+                            <c:param name="starred" value="${not empty album.starredDate}"/>
+                            <c:param name="asTable" value="true"/>
+                        </c:import>
+                        <td class="truncate"><a href="main.view?id=${album.id}" title="${fn:escapeXml(album.name)}">${fn:escapeXml(album.name)}</a></td>
+                        <td class="truncate">${fn:escapeXml(album.artist)}</td>
+                        <td class="fit left detail">${album.year}</td>
+                    </tr>
+                </c:forEach>
+            </table>
+        </c:when>
+
+        <c:otherwise>
+            <div style="padding-top:0.5em">
+                <c:forEach items="${model.albums}" var="album" varStatus="loopStatus">
+
+                    <c:set var="albumTitle">
+                        <c:choose>
+                            <c:when test="${empty album.name}">
+                                <fmt:message key="common.unknown"/>
+                            </c:when>
+                            <c:otherwise>
+                                ${fn:escapeXml(album.name)}
+                            </c:otherwise>
+                        </c:choose>
+                    </c:set>
+
+                    <div class="albumThumb">
+                        <c:import url="coverArt.jsp">
+                            <c:param name="albumId" value="${album.id}"/>
+                            <c:param name="auth" value="${album.hash}"/>
+                            <c:param name="caption1" value="${albumTitle}"/>
+                            <c:param name="caption2" value="${fn:escapeXml(album.artist)}"/>
+                            <c:param name="captionCount" value="2"/>
+                            <c:param name="coverArtSize" value="${model.coverArtSize}"/>
+                            <c:param name="showLink" value="true"/>
+                            <c:param name="showPlay" value="${model.user.streamRole}"/>
+                            <c:param name="appearAfter" value="${loopStatus.count * 30}"/>
+                        </c:import>
+                    </div>
+                </c:forEach>
+            </div>
+        </c:otherwise>
+    </c:choose>
+</c:if>
+
+<c:if test="${not empty model.songs}">
+    <h2 class="starred-header"><fmt:message key="search.hits.songs"/></h2>
+    <table class="music indent">
+
+        <tr>
+            <th colspan="5"></th>
+            <th class="truncate"><fmt:message key="lyrics.song"/></th>
+            <th class="truncate"><fmt:message key="personalsettings.album"/></th>
+            <th class="truncate"><fmt:message key="personalsettings.artist"/></th>
+        </tr>
+
+        <c:forEach items="${model.songs}" var="song">
+            <tr>
+                <c:import url="playButtons.jsp">
+                    <c:param name="id" value="${song.id}"/>
+                    <c:param name="playEnabled" value="${model.user.streamRole and not model.partyModeEnabled}"/>
+                    <c:param name="addEnabled" value="${model.user.streamRole and not model.partyModeEnabled}"/>
+                    <c:param name="starEnabled" value="true"/>
+                    <c:param name="starred" value="${not empty song.starredDate}"/>
+                    <c:param name="video" value="false"/>
+                    <c:param name="asTable" value="true"/>
+                    <c:param name="onPlay" value="top.playQueue.onPlaySingle(${song.id})"/>
+                </c:import>
+
+                <td class="truncate">
+                        ${fn:escapeXml(song.title)}
+                </td>
+
+                <td class="truncate">
+                    <a href="main.view?id=${song.id}"><span class="detail">${fn:escapeXml(song.albumName)}</span></a>
+                </td>
+
+                <td class="truncate">
+                    <span class="detail">${fn:escapeXml(song.artist)}</span>
+                </td>
+            </tr>
+
+        </c:forEach>
+    </table>
+
+    <div style="padding-top:0.6em"></div>
+    <i class="fa fa-save fa-lg fa-fw icon"></i>&nbsp;&nbsp;<a href="javascript:noop()" onclick="onSavePlaylist()"><fmt:message key="playlist.save"/></a>
+
+    <c:if test="${model.user.streamRole}">
+        <i style="padding-left:3em" class="fa fa-play fa-lg fa-fw icon"></i>&nbsp;&nbsp;<a href="javascript:noop()" onclick="onPlayAll()"><fmt:message key="main.playall"/></a>
+    </c:if>
+</c:if>
+
+<c:if test="${not empty model.videos}">
+    <h2 class="starred-header"><fmt:message key="search.hits.videos"/></h2>
+    <table class="music indent">
+        <tr></tr>
+        <c:forEach items="${model.videos}" var="video">
+
+            <c:url value="/videoPlayer.view" var="videoUrl">
+                <c:param name="id" value="${video.id}"/>
+            </c:url>
+
+            <tr>
+                <c:import url="playButtons.jsp">
+                    <c:param name="id" value="${video.id}"/>
+                    <c:param name="playEnabled" value="${model.user.streamRole and not model.partyModeEnabled}"/>
+                    <c:param name="addEnabled" value="${model.user.streamRole and not model.partyModeEnabled}"/>
+                    <c:param name="starEnabled" value="true"/>
+                    <c:param name="starred" value="${not empty video.starredDate}"/>
+                    <c:param name="video" value="${model.player.web}"/>
+                    <c:param name="asTable" value="true"/>
+                </c:import>
+                <td class="truncate">
+                    <a href="${videoUrl}">${fn:escapeXml(video.name)}</a>
+                </td>
+            </tr>
+        </c:forEach>
+    </table>
+</c:if>
+
+<div style="padding-top:2em"></div>
+
+</body></html>

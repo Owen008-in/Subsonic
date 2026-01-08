@@ -1,0 +1,83 @@
+23 [main] INFO org.springframework.context.support.ClassPathXmlApplicationContext - Refreshing org.springframework.context.support.ClassPathXmlApplicationContext@5f184fc6: display name [org.springframework.context.support.ClassPathXmlApplicationContext@5f184fc6]; startup date [Thu Jan 08 14:25:19 UTC 2026]; root of context hierarchy
+63 [main] INFO org.springframework.beans.factory.xml.XmlBeanDefinitionReader - Loading XML bean definitions from class path resource [applicationContext-deployer.xml]
+289 [main] INFO org.springframework.context.support.ClassPathXmlApplicationContext - Bean factory for application context [org.springframework.context.support.ClassPathXmlApplicationContext@5f184fc6]: org.springframework.beans.factory.support.DefaultListableBeanFactory@3cef309d
+297 [main] INFO org.springframework.beans.factory.support.DefaultListableBeanFactory - Pre-instantiating singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@3cef309d: defining beans [service,org.springframework.remoting.rmi.RmiServiceExporter#0]; root of factory hierarchy
+310 [main] INFO org.mortbay.log - Logging to org.slf4j.impl.SimpleLogger(org.mortbay.log) via org.mortbay.log.Slf4jLog
+Using WAR file: /app/standalone/subsonic.war
+Extracting webapp to /data/jetty/0cfa60
+Using WAR file: /app/standalone/subsonic.war
+332 [main] INFO org.mortbay.log - jetty-6.1.x
+355 [main] INFO org.mortbay.log - Extract jar:file:/app/standalone/subsonic.war!/ to /data/jetty/0cfa60/webapp
+[GC (Allocation Failure)  38912K->4984K(147456K), 0.0102448 secs]
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/app/standalone/subsonic-booter-jar-with-dependencies.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/data/jetty/0cfa60/webapp/WEB-INF/lib/slf4j-log4j12-1.6.1.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+[GC (Allocation Failure)  43896K->3295K(147456K), 0.0074335 secs]
+1367 [main] INFO / - Initializing Spring root WebApplicationContext
+1367 [main] INFO org.springframework.web.context.ContextLoader - Root WebApplicationContext: initialization started
+1381 [main] INFO org.springframework.web.context.support.XmlWebApplicationContext - Refreshing org.springframework.web.context.support.XmlWebApplicationContext@6a6cb05c: display name [Root WebApplicationContext]; startup date [Thu Jan 08 14:25:21 UTC 2026]; root of context hierarchy
+1404 [main] INFO org.springframework.beans.factory.xml.XmlBeanDefinitionReader - Loading XML bean definitions from ServletContext resource [/WEB-INF/applicationContext-service.xml]
+1476 [main] INFO org.springframework.beans.factory.xml.XmlBeanDefinitionReader - Loading XML bean definitions from ServletContext resource [/WEB-INF/applicationContext-security.xml]
+1496 [main] INFO org.springframework.beans.factory.xml.XmlBeanDefinitionReader - Loading XML bean definitions from ServletContext resource [/WEB-INF/applicationContext-cache.xml]
+1504 [main] INFO org.springframework.beans.factory.xml.XmlBeanDefinitionReader - Loading XML bean definitions from ServletContext resource [/WEB-INF/applicationContext-sonos.xml]
+1516 [main] INFO org.springframework.beans.factory.xml.XmlBeanDefinitionReader - Loading XML bean definitions from class path resource [META-INF/cxf/cxf.xml]
+1526 [main] INFO org.springframework.beans.factory.xml.XmlBeanDefinitionReader - Loading XML bean definitions from class path resource [META-INF/cxf/cxf-servlet.xml]
+[GC (System.gc())  25045K->4676K(147456K), 0.0069962 secs]
+[Full GC (System.gc())  4676K->4338K(147456K), 0.0243251 secs]
+1659 [main] INFO org.springframework.web.context.support.XmlWebApplicationContext - Bean factory for application context [org.springframework.web.context.support.XmlWebApplicationContext@6a6cb05c]: org.springframework.beans.factory.support.DefaultListableBeanFactory@242b836
+1765 [main] INFO org.springframework.beans.factory.support.DefaultListableBeanFactory - Pre-instantiating singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@242b836: defining beans [playerDao,mediaFileDao,artistDao,albumDao,playlistDao,playQueueDao,internetRadioDao,musicFileInfoDao,musicFolderDao,userDao,transcodingDao,podcastDao,avatarDao,shareDao,bookmarkDao,videoConversionDao,daoHelper,mediaFileService,securityService,settingsService,mediaScannerService,searchService,networkService,playerService,playlistService,versionService,statusService,ratingService,musicIndexService,audioScrobblerService,transcodingService,shareService,podcastService,adService,jukeboxService,folderBasedContentDirectory,upnpService,fanartTvService,lastFmService,bookmarkService,videoConversionService,sonosService,metaDataParserFactory,ajaxMultiService,ajaxNowPlayingService,ajaxPlayQueueService,ajaxPlaylistService,ajaxLyricsService,ajaxCoverArtService,ajaxStarService,ajaxTagService,ajaxTransferService,ajaxChatService,localeResolver,loginFailureLogger,net.sourceforge.subsonic.security.SubsonicApplicationEventListener#0,filterChainProxy,httpSessionContextIntegrationFilter,logoutFilter,authenticationProcessingFilter,basicProcessingFilter,restRequestParameterProcessingFilter,basicProcessingFilterEntryPoint,securityContextHolderAwareRequestFilter,rememberMeProcessingFilter,anonymousProcessingFilter,exceptionTranslationFilter,basicExceptionTranslationFilter,filterInvocationInterceptor,accessDecisionManager,rememberMeServices,authenticationManager,daoAuthenticationProvider,userCacheWrapper,ldapAuthenticationProvider,bindAuthenticator,userDetailsServiceBasedAuthoritiesPopulator,ajaxServiceInterceptor,ajaxTagServiceSecure,ajaxTransferServiceSecure,cacheFactory,userCache,mediaFileMemoryCache,cxf,org.apache.cxf.bus.spring.BusWiringBeanFactoryPostProcessor,org.apache.cxf.bus.spring.Jsr250BeanPostProcessor,org.apache.cxf.bus.spring.BusExtensionPostProcessor,sonosEndpoint,sonosHelper]; root of factory hierarchy
+1791 [main] INFO org.springframework.jdbc.datasource.DriverManagerDataSource - Loaded JDBC driver: org.hsqldb.jdbcDriver
+1878 [main] INFO org.springframework.beans.factory.xml.XmlBeanDefinitionReader - Loading XML bean definitions from class path resource [org/springframework/jdbc/support/sql-error-codes.xml]
+1902 [main] INFO org.springframework.jdbc.support.SQLErrorCodesFactory - SQLErrorCodes loaded: [DB2, Derby, H2, HSQL, Informix, MS-SQL, MySQL, Oracle, PostgreSQL, Sybase]
+[GC (Allocation Failure)  43250K->11903K(147456K), 0.0092976 secs]
+[GC (Metadata GC Threshold)  42375K->13519K(147456K), 0.0077476 secs]
+[Full GC (Metadata GC Threshold)  13519K->10240K(124416K), 0.0479637 secs]
+[GC (Allocation Failure)  49152K->16255K(118272K), 0.0056132 secs]
+[GC (Allocation Failure)  49023K->19075K(121344K), 0.0078620 secs]
+3796 [main] INFO org.acegisecurity.intercept.AbstractSecurityInterceptor - Validated configuration attributes
+3801 [main] INFO org.acegisecurity.intercept.method.MethodDefinitionMap - Adding secure method [public net.sourceforge.subsonic.ajax.UploadInfo net.sourceforge.subsonic.ajax.TransferService.getUploadInfo()] with attributes [[ROLE_UPLOAD]]
+3801 [main] INFO org.acegisecurity.intercept.method.MethodDefinitionMap - Adding secure method [public java.lang.String net.sourceforge.subsonic.ajax.TagService.setTags(int,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)] with attributes [[ROLE_COVERART]]
+3802 [main] INFO org.acegisecurity.intercept.AbstractSecurityInterceptor - Validated configuration attributes
+[GC (Allocation Failure)  51843K->21942K(115200K), 0.0095280 secs]
+[GC (Metadata GC Threshold)  29222K->21338K(118272K), 0.0102057 secs]
+[Full GC (Metadata GC Threshold)  21338K->16818K(141312K), 0.1319387 secs]
+[GC (Allocation Failure)  43442K->20879K(141312K), 0.0106380 secs]
+4797 [main] INFO org.springframework.web.context.ContextLoader - Root WebApplicationContext: initialization completed in 3430 ms
+[GC (Allocation Failure)  47503K->21874K(134144K), 0.0083058 secs]
+4918 [main] INFO / - Initializing Spring FrameworkServlet 'subsonic'
+4919 [main] INFO org.springframework.web.servlet.DispatcherServlet - FrameworkServlet 'subsonic': initialization started
+4919 [main] INFO org.springframework.web.context.support.XmlWebApplicationContext - Refreshing org.springframework.web.context.support.XmlWebApplicationContext@6a1d3225: display name [WebApplicationContext for namespace 'subsonic-servlet']; startup date [Thu Jan 08 14:25:24 UTC 2026]; parent: org.springframework.web.context.support.XmlWebApplicationContext@6a6cb05c
+4919 [main] INFO org.springframework.beans.factory.xml.XmlBeanDefinitionReader - Loading XML bean definitions from ServletContext resource [/WEB-INF/subsonic-servlet.xml]
+4960 [main] INFO org.springframework.web.context.support.XmlWebApplicationContext - Bean factory for application context [org.springframework.web.context.support.XmlWebApplicationContext@6a1d3225]: org.springframework.beans.factory.support.DefaultListableBeanFactory@4821aa9f
+5005 [main] INFO org.springframework.beans.factory.support.DefaultListableBeanFactory - Pre-instantiating singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@4821aa9f: defining beans [leftController,artistsController,rightController,statusController,mainController,playlistController,playlistsController,bookmarksController,importPlaylistController,topController,helpController,moreController,uploadController,lyricsController,allmusicController,podcastController,podcastChannelsController,internetRadioController,internetRadioStreamController,podcastChannelController,podcastReceiverAdminController,setMusicFileInfoController,shareManagementController,setRatingController,randomPlayQueueController,changeCoverArtController,nowPlayingController,starredController,searchController,settingsController,playerSettingsController,dlnaSettingsController,sonosSettingsController,shareSettingsController,musicFolderSettingsController,networkSettingsController,transcodingSettingsController,internetRadioSettingsController,podcastSettingsController,videoConversionSettingsController,generalSettingsController,advancedSettingsController,personalSettingsController,avatarUploadController,userSettingsController,passwordSettingsController,homeController,editTagsController,playQueueController,coverArtController,artistImageController,captionsController,avatarController,statusChartController,userChartController,m3uController,streamController,hlsController,segmentController,videoPlayerController,videoConverterController,externalPlayerController,downloadController,premiumSettingsController,multiController,wapController,restController,dbController,premiumSettingsValidator,userSettingsValidator,passwordSettingsValidator,urlMapping,messageSource,themeSource,themeResolver,viewResolver]; parent: org.springframework.beans.factory.support.DefaultListableBeanFactory@242b836
+[GC (Allocation Failure)  48498K->21089K(140800K), 0.0065075 secs]
+[GC (Allocation Failure)  47713K->21538K(140800K), 0.0053032 secs]
+[GC (Allocation Failure)  48162K->22258K(140800K), 0.0054593 secs]
+[GC (Allocation Failure)  49906K->23955K(141312K), 0.0103854 secs]
+5351 [main] INFO org.springframework.web.servlet.DispatcherServlet - FrameworkServlet 'subsonic': initialization completed in 432 ms
+5359 [main] INFO org.mortbay.log - Started SelectChannelConnector@0.0.0.0:4040
+Subsonic running on: http://localhost:4040/
+5382 [main] INFO org.springframework.remoting.rmi.RmiServiceExporter - Looking for RMI registry at port '9412'
+5390 [main] INFO org.springframework.remoting.rmi.RmiServiceExporter - Could not detect RMI registry - creating new one
+5409 [main] INFO org.springframework.remoting.rmi.RmiServiceExporter - Binding service 'SubsonicDeployerService' to RMI registry: RegistryImpl[UnicastServerRef [liveRef: [endpoint:[172.17.0.2:9412](local),objID:[0:0:0, 0]]]]
+[GC (Allocation Failure)  51603K->26208K(141312K), 0.0092084 secs]
+[GC (Allocation Failure)  53856K->25797K(139264K), 0.0401638 secs]
+[GC (Allocation Failure)  53445K->28418K(139264K), 0.0101233 secs]
+[GC (Allocation Failure)  52994K->27401K(137728K), 0.0110546 secs]
+[GC (Allocation Failure)  51977K->28294K(138240K), 0.0091876 secs]
+[GC (Allocation Failure)  49798K->29053K(136192K), 0.0100153 secs]
+[GC (Allocation Failure)  50483K->30129K(135680K), 0.0103496 secs]
+[GC (Allocation Failure)  47537K->30352K(136704K), 0.0129693 secs]
+[GC (Allocation Failure)  47760K->31720K(136704K), 0.0098664 secs]
+[GC (Allocation Failure)  49128K->32715K(136704K), 0.0066516 secs]
+40425 [btpool0-2] INFO org.directwebremoting.log.startup - Starting: DwrServlet v3.0.0-FINAL on jetty-6.1.x / JDK 1.8.0_472 from Temurin at 
+[GC (Allocation Failure)  50123K->29541K(136704K), 0.0117524 secs]
+[GC (Allocation Failure)  46949K->32247K(126464K), 0.0083975 secs]
+[GC (Allocation Failure)  49655K->36721K(136704K), 0.0112921 secs]
+40637 [btpool0-2] INFO org.directwebremoting.log.startup - Starting: Using container abstraction org.directwebremoting.server.servlet2.Servlet24ContainerAbstraction
+40643 [btpool0-2] INFO org.directwebremoting.servlet.UrlProcessor - Probably not an issue: the url:/gi.js (org.directwebremoting.gi.GiHandler) Handler is not available. This is only an problem if you wanted to use it.
+[GC (Allocation Failure)  54641K->40888K(136192K), 0.0136390 secs]
+[GC (Allocation Failure)  58808K->42071K(136704K), 0.0104689 secs]
+[GC (Allocation Failure)  59479K->40801K(136704K), 0.0163699 secs]
+[GC (Allocation Failure)  58209K->40722K(136704K), 0.0220234 secs]

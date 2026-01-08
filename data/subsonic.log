@@ -1,0 +1,271 @@
+[2026-01-08 14:25:21,666] INFO HsqlDaoHelper - Checking database schema.
+[2026-01-08 14:25:21,788] INFO Schema25 - Database table 'version' not found.  Creating it.
+[2026-01-08 14:25:21,790] INFO Schema25 - Database table 'version' was created successfully.
+[2026-01-08 14:25:21,791] INFO Schema25 - Database table 'role' not found.  Creating it.
+[2026-01-08 14:25:21,792] INFO Schema25 - Database table 'role' was created successfully.
+[2026-01-08 14:25:21,792] INFO Schema25 - Database table 'user' not found.  Creating it.
+[2026-01-08 14:25:21,797] INFO Schema25 - Database table 'user' was created successfully.
+[2026-01-08 14:25:21,797] INFO Schema25 - Database table 'user_role' not found.  Creating it.
+[2026-01-08 14:25:21,802] INFO Schema25 - Database table 'user_role' was created successfully.
+[2026-01-08 14:25:21,809] INFO Schema26 - Updating database schema to version 2.
+[2026-01-08 14:25:21,810] INFO Schema26 - Database table 'music_folder' not found.  Creating it.
+[2026-01-08 14:25:21,811] INFO Schema26 - Database table 'music_folder' was created successfully.
+[2026-01-08 14:25:21,811] INFO Schema26 - Database table 'music_file_info' not found.  Creating it.
+[2026-01-08 14:25:21,834] INFO Schema26 - Database table 'music_file_info' was created successfully.
+[2026-01-08 14:25:21,835] INFO Schema26 - Database table 'internet_radio' not found.  Creating it.
+[2026-01-08 14:25:21,835] INFO Schema26 - Database table 'internet_radio' was created successfully.
+[2026-01-08 14:25:21,836] INFO Schema26 - Database table 'player' not found.  Creating it.
+[2026-01-08 14:25:21,837] INFO Schema26 - Database table 'player' was created successfully.
+[2026-01-08 14:25:21,837] INFO Schema26 - Database column 'player.dynamic_ip' not found.  Creating it.
+[2026-01-08 14:25:21,837] INFO Schema26 - Database column 'player.dynamic_ip' was added successfully.
+[2026-01-08 14:25:21,838] INFO Schema26 - Role 'comment' not found in database. Creating it.
+[2026-01-08 14:25:21,839] INFO Schema26 - Role 'comment' was created successfully.
+[2026-01-08 14:25:21,840] INFO Schema27 - Updating database schema to version 3.
+[2026-01-08 14:25:21,840] INFO Schema27 - Converting database column 'music_file_info.path' to varchar_ignorecase.
+[2026-01-08 14:25:21,842] INFO Schema27 - Database column 'music_file_info.path' was converted successfully.
+[2026-01-08 14:25:21,842] INFO Schema27 - Database columns 'user.bytes_streamed/downloaded/uploaded' not found.  Creating them.
+[2026-01-08 14:25:21,843] INFO Schema27 - Database columns 'user.bytes_streamed/downloaded/uploaded' were added successfully.
+[2026-01-08 14:25:21,844] INFO Schema28 - Updating database schema to version 4.
+[2026-01-08 14:25:21,844] INFO Schema28 - Database table 'user_settings' not found.  Creating it.
+[2026-01-08 14:25:21,845] INFO Schema28 - Database table 'user_settings' was created successfully.
+[2026-01-08 14:25:21,846] INFO Schema28 - Database table 'transcoding' not found.  Creating it.
+[2026-01-08 14:25:21,851] INFO Schema28 - Database table 'transcoding' was created successfully.
+[2026-01-08 14:25:21,853] INFO Schema28 - Database table 'player_transcoding' not found.  Creating it.
+[2026-01-08 14:25:21,853] INFO Schema28 - Database table 'player_transcoding' was created successfully.
+[2026-01-08 14:25:21,853] INFO Schema29 - Updating database schema to version 5.
+[2026-01-08 14:25:21,854] INFO Schema29 - Database table 'user_rating' not found.  Creating it.
+[2026-01-08 14:25:21,854] INFO Schema29 - Database table 'user_rating' was created successfully.
+[2026-01-08 14:25:21,854] INFO Schema29 - Migrated data from 'music_file_info' to 'user_rating'.
+[2026-01-08 14:25:21,854] INFO Schema30 - Updating database schema to version 6.
+[2026-01-08 14:25:21,855] INFO Schema30 - Database columns 'user_settings.last_fm_*' not found.  Creating them.
+[2026-01-08 14:25:21,855] INFO Schema30 - Database columns 'user_settings.last_fm_*' were added successfully.
+[2026-01-08 14:25:21,856] INFO Schema30 - Database column 'user_settings.transcode_scheme' not found.  Creating it.
+[2026-01-08 14:25:21,857] INFO Schema30 - Database column 'user_settings.transcode_scheme' was added successfully.
+[2026-01-08 14:25:21,859] INFO Schema31 - Updating database schema to version 7.
+[2026-01-08 14:25:21,860] INFO Schema31 - Database column 'music_file_info.enabled' not found.  Creating it.
+[2026-01-08 14:25:21,860] INFO Schema31 - Database column 'music_file_info.enabled' was added successfully.
+[2026-01-08 14:25:21,860] INFO Schema31 - Database column 'transcoding.default_active' not found.  Creating it.
+[2026-01-08 14:25:21,861] INFO Schema31 - Database column 'transcoding.default_active' was added successfully.
+[2026-01-08 14:25:21,861] INFO Schema32 - Updating database schema to version 8.
+[2026-01-08 14:25:21,861] INFO Schema32 - Database column 'user_settings.show_now_playing' not found.  Creating it.
+[2026-01-08 14:25:21,861] INFO Schema32 - Database column 'user_settings.show_now_playing' was added successfully.
+[2026-01-08 14:25:21,863] INFO Schema32 - Database column 'user_settings.selected_music_folder_id' not found.  Creating it.
+[2026-01-08 14:25:21,863] INFO Schema32 - Database column 'user_settings.selected_music_folder_id' was added successfully.
+[2026-01-08 14:25:21,863] INFO Schema32 - Database table 'podcast_channel' not found.  Creating it.
+[2026-01-08 14:25:21,863] INFO Schema32 - Database table 'podcast_channel' was created successfully.
+[2026-01-08 14:25:21,864] INFO Schema32 - Database table 'podcast_episode' not found.  Creating it.
+[2026-01-08 14:25:21,864] INFO Schema32 - Database table 'podcast_episode' was created successfully.
+[2026-01-08 14:25:21,864] INFO Schema32 - Role 'podcast' not found in database. Creating it.
+[2026-01-08 14:25:21,866] INFO Schema32 - Role 'podcast' was created successfully.
+[2026-01-08 14:25:21,866] INFO Schema33 - Updating database schema to version 9.
+[2026-01-08 14:25:21,867] INFO Schema33 - Database column 'player.client_side_playlist' not found.  Creating it.
+[2026-01-08 14:25:21,867] INFO Schema33 - Database column 'player.client_side_playlist' was added successfully.
+[2026-01-08 14:25:21,867] INFO Schema34 - Updating database schema to version 10.
+[2026-01-08 14:25:21,868] INFO Schema34 - Database column 'user.ldap_authenticated' not found.  Creating it.
+[2026-01-08 14:25:21,868] INFO Schema34 - Database column 'user.ldap_authenticated' was added successfully.
+[2026-01-08 14:25:21,868] INFO Schema34 - Database column 'user_settings.party_mode_enabled' not found.  Creating it.
+[2026-01-08 14:25:21,868] INFO Schema34 - Database column 'user_settings.party_mode_enabled' was added successfully.
+[2026-01-08 14:25:21,869] INFO Schema35 - Updating database schema to version 11.
+[2026-01-08 14:25:21,869] INFO Schema35 - Database column 'user_settings.now_playing_allowed' not found.  Creating it.
+[2026-01-08 14:25:21,869] INFO Schema35 - Database column 'user_settings.now_playing_allowed' was added successfully.
+[2026-01-08 14:25:21,869] INFO Schema35 - Database column 'user_settings.web_player_default' not found.  Creating it.
+[2026-01-08 14:25:21,869] INFO Schema35 - Database column 'user_settings.web_player_default' was added successfully.
+[2026-01-08 14:25:21,870] INFO Schema35 - Role 'stream' not found in database. Creating it.
+[2026-01-08 14:25:21,870] INFO Schema35 - Role 'stream' was created successfully.
+[2026-01-08 14:25:21,870] INFO Schema35 - Database table 'system_avatar' not found.  Creating it.
+[2026-01-08 14:25:21,870] INFO Schema35 - Database table 'system_avatar' was created successfully.
+[2026-01-08 14:25:21,882] INFO Schema35 - Created avatar 'Formal'.
+[2026-01-08 14:25:21,884] INFO Schema35 - Created avatar 'Engineer'.
+[2026-01-08 14:25:21,887] INFO Schema35 - Created avatar 'Footballer'.
+[2026-01-08 14:25:21,888] INFO Schema35 - Created avatar 'Green-Boy'.
+[2026-01-08 14:25:21,889] INFO Schema35 - Created avatar 'Linux-Zealot'.
+[2026-01-08 14:25:21,890] INFO Schema35 - Created avatar 'Mac-Zealot'.
+[2026-01-08 14:25:21,891] INFO Schema35 - Created avatar 'Windows-Zealot'.
+[2026-01-08 14:25:21,892] INFO Schema35 - Created avatar 'Army-Officer'.
+[2026-01-08 14:25:21,893] INFO Schema35 - Created avatar 'Beatnik'.
+[2026-01-08 14:25:21,894] INFO Schema35 - Created avatar 'All-Caps'.
+[2026-01-08 14:25:21,894] INFO Schema35 - Created avatar 'Clown'.
+[2026-01-08 14:25:21,895] INFO Schema35 - Created avatar 'Commie-Pinko'.
+[2026-01-08 14:25:21,896] INFO Schema35 - Created avatar 'Forum-Flirt'.
+[2026-01-08 14:25:21,897] INFO Schema35 - Created avatar 'Gamer'.
+[2026-01-08 14:25:21,898] INFO Schema35 - Created avatar 'Hopelessly-Addicted'.
+[2026-01-08 14:25:21,899] INFO Schema35 - Created avatar 'Jekyll-And-Hyde'.
+[2026-01-08 14:25:21,900] INFO Schema35 - Created avatar 'Joker'.
+[2026-01-08 14:25:21,902] INFO Schema35 - Created avatar 'Lurker'.
+[2026-01-08 14:25:21,904] INFO Schema35 - Created avatar 'Moderator'.
+[2026-01-08 14:25:21,905] INFO Schema35 - Created avatar 'Newbie'.
+[2026-01-08 14:25:21,905] INFO Schema35 - Created avatar 'No-Dissent'.
+[2026-01-08 14:25:21,906] INFO Schema35 - Created avatar 'Performer'.
+[2026-01-08 14:25:21,906] INFO Schema35 - Created avatar 'Push-My-Button'.
+[2026-01-08 14:25:21,907] INFO Schema35 - Created avatar 'Ray-Of-Sunshine'.
+[2026-01-08 14:25:21,908] INFO Schema35 - Created avatar 'Red-Hot-Chili-Peppers-1'.
+[2026-01-08 14:25:21,909] INFO Schema35 - Created avatar 'Red-Hot-Chili-Peppers-2'.
+[2026-01-08 14:25:21,910] INFO Schema35 - Created avatar 'Red-Hot-Chili-Peppers-3'.
+[2026-01-08 14:25:21,911] INFO Schema35 - Created avatar 'Red-Hot-Chili-Peppers-4'.
+[2026-01-08 14:25:21,911] INFO Schema35 - Created avatar 'Ringmaster'.
+[2026-01-08 14:25:21,912] INFO Schema35 - Created avatar 'Rumor-Junkie'.
+[2026-01-08 14:25:21,912] INFO Schema35 - Created avatar 'Sozzled-Surfer'.
+[2026-01-08 14:25:21,915] INFO Schema35 - Created avatar 'Statistician'.
+[2026-01-08 14:25:21,917] INFO Schema35 - Created avatar 'Tech-Support'.
+[2026-01-08 14:25:21,919] INFO Schema35 - Created avatar 'The-Guru'.
+[2026-01-08 14:25:21,920] INFO Schema35 - Created avatar 'The-Referee'.
+[2026-01-08 14:25:21,921] INFO Schema35 - Created avatar 'Troll'.
+[2026-01-08 14:25:21,923] INFO Schema35 - Created avatar 'Uptight'.
+[2026-01-08 14:25:21,924] INFO Schema35 - Created avatar 'Fire-Guitar'.
+[2026-01-08 14:25:21,925] INFO Schema35 - Created avatar 'Drum'.
+[2026-01-08 14:25:21,926] INFO Schema35 - Created avatar 'Headphones'.
+[2026-01-08 14:25:21,927] INFO Schema35 - Created avatar 'Mic'.
+[2026-01-08 14:25:21,929] INFO Schema35 - Created avatar 'Turntable'.
+[2026-01-08 14:25:21,929] INFO Schema35 - Created avatar 'Vinyl'.
+[2026-01-08 14:25:21,930] INFO Schema35 - Created avatar 'Cool'.
+[2026-01-08 14:25:21,931] INFO Schema35 - Created avatar 'Laugh'.
+[2026-01-08 14:25:21,932] INFO Schema35 - Created avatar 'Study'.
+[2026-01-08 14:25:21,933] INFO Schema35 - Database table 'custom_avatar' not found.  Creating it.
+[2026-01-08 14:25:21,933] INFO Schema35 - Database table 'custom_avatar' was created successfully.
+[2026-01-08 14:25:21,934] INFO Schema35 - Database column 'user_settings.avatar_scheme' not found.  Creating it.
+[2026-01-08 14:25:21,934] INFO Schema35 - Database column 'user_settings.avatar_scheme' was added successfully.
+[2026-01-08 14:25:21,934] INFO Schema35 - Database column 'user_settings.system_avatar_id' not found.  Creating it.
+[2026-01-08 14:25:21,936] INFO Schema35 - Database column 'user_settings.system_avatar_id' was added successfully.
+[2026-01-08 14:25:21,938] INFO Schema35 - Database column 'player.jukebox' not found.  Creating it.
+[2026-01-08 14:25:21,939] INFO Schema35 - Database column 'player.jukebox' was added successfully.
+[2026-01-08 14:25:21,940] INFO Schema36 - Updating database schema to version 12.
+[2026-01-08 14:25:21,941] INFO Schema36 - Database column 'player.technology' not found.  Creating it.
+[2026-01-08 14:25:21,942] INFO Schema36 - Database column 'player.technology' was added successfully.
+[2026-01-08 14:25:21,943] INFO Schema37 - Updating database schema to version 13.
+[2026-01-08 14:25:21,944] INFO Schema37 - Role 'settings' not found in database. Creating it.
+[2026-01-08 14:25:21,946] INFO Schema37 - Role 'settings' was created successfully.
+[2026-01-08 14:25:21,946] INFO Schema37 - Role 'jukebox' not found in database. Creating it.
+[2026-01-08 14:25:21,947] INFO Schema37 - Role 'jukebox' was created successfully.
+[2026-01-08 14:25:21,948] INFO Schema37 - Database column 'music_folder.changed' not found.  Creating it.
+[2026-01-08 14:25:21,955] INFO Schema37 - Database column 'music_folder.changed' was added successfully.
+[2026-01-08 14:25:21,956] INFO Schema37 - Database column 'internet_radio.changed' not found.  Creating it.
+[2026-01-08 14:25:21,957] INFO Schema37 - Database column 'internet_radio.changed' was added successfully.
+[2026-01-08 14:25:21,958] INFO Schema37 - Database column 'user_settings.changed' not found.  Creating it.
+[2026-01-08 14:25:21,959] INFO Schema37 - Database column 'user_settings.changed' was added successfully.
+[2026-01-08 14:25:21,960] INFO Schema38 - Updating database schema to version 14.
+[2026-01-08 14:25:21,962] INFO Schema38 - Database column 'player.client_id' not found.  Creating it.
+[2026-01-08 14:25:21,962] INFO Schema38 - Database column 'player.client_id' was added successfully.
+[2026-01-08 14:25:21,963] INFO Schema38 - Database column 'user_settings.show_chat' not found.  Creating it.
+[2026-01-08 14:25:21,964] INFO Schema38 - Database column 'user_settings.show_chat' was added successfully.
+[2026-01-08 14:25:21,964] INFO Schema40 - Updating database schema to version 15.
+[2026-01-08 14:25:21,966] INFO Schema40 - Reset stream byte count statistics.
+[2026-01-08 14:25:21,968] INFO Schema43 - Updating database schema to version 16.
+[2026-01-08 14:25:21,969] INFO Schema43 - Updating database schema to version 17.
+[2026-01-08 14:25:21,986] INFO Schema43 - Created video transcoding configuration.
+[2026-01-08 14:25:21,987] INFO Schema43 - Database column 'user.email' not found.  Creating it.
+[2026-01-08 14:25:21,988] INFO Schema43 - Database column 'user.email' was added successfully.
+[2026-01-08 14:25:21,989] INFO Schema45 - Updating database schema to version 18.
+[2026-01-08 14:25:21,990] INFO Schema45 - Role 'share' not found in database. Creating it.
+[2026-01-08 14:25:21,990] INFO Schema45 - Role 'share' was created successfully.
+[2026-01-08 14:25:21,991] INFO Schema45 - Table 'share' not found in database. Creating it.
+[2026-01-08 14:25:21,993] INFO Schema45 - Table 'share' was created successfully.
+[2026-01-08 14:25:21,993] INFO Schema45 - Table 'share_file' not found in database. Creating it.
+[2026-01-08 14:25:21,993] INFO Schema45 - Table 'share_file' was created successfully.
+[2026-01-08 14:25:21,994] INFO Schema46 - Updating database schema to version 19.
+[2026-01-08 14:25:21,995] INFO Schema46 - Database table 'transcoding2' not found.  Creating it.
+[2026-01-08 14:25:21,996] INFO Schema46 - Database table 'transcoding2' was created successfully.
+[2026-01-08 14:25:21,996] INFO Schema46 - Database table 'player_transcoding2' not found.  Creating it.
+[2026-01-08 14:25:21,998] INFO Schema46 - Database table 'player_transcoding2' was created successfully.
+[2026-01-08 14:25:21,998] INFO Schema46 - Database column 'transcoding2.default_active' not found.  Creating it.
+[2026-01-08 14:25:22,000] INFO Schema46 - Database column 'transcoding2.default_active' was added successfully.
+[2026-01-08 14:25:22,001] INFO Schema47 - Updating database schema to version 20.
+[2026-01-08 14:25:22,002] INFO Schema47 - Database table 'media_file' not found.  Creating it.
+[2026-01-08 14:25:22,006] INFO Schema47 - Database table 'media_file' was created successfully.
+[2026-01-08 14:25:22,006] INFO Schema47 - Database table 'artist' not found.  Creating it.
+[2026-01-08 14:25:22,008] INFO Schema47 - Database table 'artist' was created successfully.
+[2026-01-08 14:25:22,008] INFO Schema47 - Database table 'album' not found.  Creating it.
+[2026-01-08 14:25:22,009] INFO Schema47 - Database table 'album' was created successfully.
+[2026-01-08 14:25:22,026] INFO Schema47 - Database table 'starred_media_file' not found.  Creating it.
+[2026-01-08 14:25:22,028] INFO Schema47 - Database table 'starred_media_file' was created successfully.
+[2026-01-08 14:25:22,029] INFO Schema47 - Database table 'starred_album' not found.  Creating it.
+[2026-01-08 14:25:22,031] INFO Schema47 - Database table 'starred_album' was created successfully.
+[2026-01-08 14:25:22,031] INFO Schema47 - Database table 'starred_artist' not found.  Creating it.
+[2026-01-08 14:25:22,033] INFO Schema47 - Database table 'starred_artist' was created successfully.
+[2026-01-08 14:25:22,034] INFO Schema47 - Database table 'playlist' not found.  Creating it.
+[2026-01-08 14:25:22,035] INFO Schema47 - Database table 'playlist' was created successfully.
+[2026-01-08 14:25:22,037] INFO Schema47 - Database column 'playlist.imported_from' not found.  Creating it.
+[2026-01-08 14:25:22,038] INFO Schema47 - Database column 'playlist.imported_from' was added successfully.
+[2026-01-08 14:25:22,038] INFO Schema47 - Database table 'playlist_file' not found.  Creating it.
+[2026-01-08 14:25:22,039] INFO Schema47 - Database table 'playlist_file' was created successfully.
+[2026-01-08 14:25:22,040] INFO Schema47 - Database table 'playlist_user' not found.  Creating it.
+[2026-01-08 14:25:22,041] INFO Schema47 - Database table 'playlist_user' was created successfully.
+[2026-01-08 14:25:22,042] INFO Schema47 - Database table 'bookmark' not found.  Creating it.
+[2026-01-08 14:25:22,044] INFO Schema47 - Database table 'bookmark' was created successfully.
+[2026-01-08 14:25:22,045] INFO Schema49 - Updating database schema to version 21.
+[2026-01-08 14:25:22,046] INFO Schema49 - Database column 'album.year' not found.  Creating it.
+[2026-01-08 14:25:22,047] INFO Schema49 - Database column 'album.year' was added successfully.
+[2026-01-08 14:25:22,048] INFO Schema49 - Database column 'album.genre' not found.  Creating it.
+[2026-01-08 14:25:22,048] INFO Schema49 - Database column 'album.genre' was added successfully.
+[2026-01-08 14:25:22,049] INFO Schema49 - Database table 'genre' not found.  Creating it.
+[2026-01-08 14:25:22,049] INFO Schema49 - Database table 'genre' was created successfully.
+[2026-01-08 14:25:22,050] INFO Schema49 - Database column 'genre.album_count' not found.  Creating it.
+[2026-01-08 14:25:22,051] INFO Schema49 - Database column 'genre.album_count' was added successfully.
+[2026-01-08 14:25:22,052] INFO Schema50 - Updating database schema to version 22.
+[2026-01-08 14:25:22,053] INFO Schema50 - Added mkv transcoding.
+[2026-01-08 14:25:22,054] INFO Schema50 - Database column 'user_settings.song_notification' not found.  Creating it.
+[2026-01-08 14:25:22,055] INFO Schema50 - Database column 'user_settings.song_notification' was added successfully.
+[2026-01-08 14:25:22,056] INFO Schema50 - Updating database schema to version 23.
+[2026-01-08 14:25:22,060] INFO Schema51 - Database column 'user_settings.show_artist_info' not found.  Creating it.
+[2026-01-08 14:25:22,062] INFO Schema51 - Database column 'user_settings.show_artist_info' was added successfully.
+[2026-01-08 14:25:22,063] INFO Schema51 - Database column 'user_settings.auto_hide_play_queue' not found.  Creating it.
+[2026-01-08 14:25:22,064] INFO Schema51 - Database column 'user_settings.auto_hide_play_queue' was added successfully.
+[2026-01-08 14:25:22,065] INFO Schema51 - Database column 'user_settings.view_as_list' not found.  Creating it.
+[2026-01-08 14:25:22,066] INFO Schema51 - Database column 'user_settings.view_as_list' was added successfully.
+[2026-01-08 14:25:22,067] INFO Schema52 - Updating database schema to version 24.
+[2026-01-08 14:25:22,068] INFO Schema52 - Database table 'music_folder_user' not found.  Creating it.
+[2026-01-08 14:25:22,069] INFO Schema52 - Database table 'music_folder_user' was created successfully.
+[2026-01-08 14:25:22,072] INFO Schema52 - Database column 'album.folder_id' not found.  Creating it.
+[2026-01-08 14:25:22,073] INFO Schema52 - Database column 'album.folder_id' was added successfully.
+[2026-01-08 14:25:22,074] INFO Schema52 - Database table 'play_queue' not found.  Creating it.
+[2026-01-08 14:25:22,074] INFO Schema52 - Database table 'play_queue' was created successfully.
+[2026-01-08 14:25:22,075] INFO Schema52 - Database table 'play_queue_file' not found.  Creating it.
+[2026-01-08 14:25:22,076] INFO Schema52 - Database table 'play_queue_file' was created successfully.
+[2026-01-08 14:25:22,076] INFO Schema53 - Updating database schema to version 25.
+[2026-01-08 14:25:22,081] INFO Schema53 - Created index for podcast_episode.url
+[2026-01-08 14:25:22,082] INFO Schema53 - Database column 'user_settings.default_album_list' not found.  Creating it.
+[2026-01-08 14:25:22,086] INFO Schema53 - Database column 'user_settings.default_album_list' was added successfully.
+[2026-01-08 14:25:22,088] INFO Schema53 - Database column 'user_settings.queue_following_songs' not found.  Creating it.
+[2026-01-08 14:25:22,089] INFO Schema53 - Database column 'user_settings.queue_following_songs' was added successfully.
+[2026-01-08 14:25:22,090] INFO Schema53 - Database column 'podcast_channel.image_url' not found.  Creating it.
+[2026-01-08 14:25:22,090] INFO Schema53 - Database column 'podcast_channel.image_url' was added successfully.
+[2026-01-08 14:25:22,091] INFO Schema53 - Database column 'user_settings.show_side_bar' not found.  Creating it.
+[2026-01-08 14:25:22,092] INFO Schema53 - Database column 'user_settings.show_side_bar' was added successfully.
+[2026-01-08 14:25:22,092] INFO Schema53 - Database column 'artist.folder_id' not found.  Creating it.
+[2026-01-08 14:25:22,092] INFO Schema53 - Database column 'artist.folder_id' was added successfully.
+[2026-01-08 14:25:22,093] INFO Schema60 - Updating database schema to version 26.
+[2026-01-08 14:25:22,094] INFO Schema60 - Deleting obsolete video transcodings.
+[2026-01-08 14:25:22,095] INFO Schema60 - Database table 'video_conversion' not found.  Creating it.
+[2026-01-08 14:25:22,096] INFO Schema60 - Database table 'video_conversion' was created successfully.
+[2026-01-08 14:25:22,097] INFO Schema60 - Role 'video_conversion' not found in database. Creating it.
+[2026-01-08 14:25:22,100] INFO Schema60 - Role 'video_conversion' was created successfully.
+[2026-01-08 14:25:22,101] INFO Schema60 - Database column 'user_settings.show_index_in_side_bar' not found.  Creating it.
+[2026-01-08 14:25:22,102] INFO Schema60 - Database column 'user_settings.show_index_in_side_bar' was added successfully.
+[2026-01-08 14:25:22,103] INFO Schema61 - Updating database schema to version 27.
+[2026-01-08 14:25:22,104] INFO Schema61 - Database column 'user_settings.preferred_video_bitrate' not found.  Creating it.
+[2026-01-08 14:25:22,105] INFO Schema61 - Database column 'user_settings.preferred_video_bitrate' was added successfully.
+[2026-01-08 14:25:22,105] INFO Schema61 - Database table 'table_id' not found.  Creating it.
+[2026-01-08 14:25:22,106] INFO Schema61 - Database table 'table_id' was created successfully.
+[2026-01-08 14:25:22,106] INFO HsqlDaoHelper - Done checking database schema.
+[2026-01-08 14:25:22,304] INFO SettingsService - Java: 1.8.0_472, OS: Linux
+[2026-01-08 14:25:22,433] INFO MediaScannerService - Automatic media library scanning scheduled to run every 1 day(s), starting at Fri Jan 09 03:00:00 UTC 2026
+[2026-01-08 14:25:22,433] INFO MediaScannerService - Media library never scanned. Doing it now.
+[2026-01-08 14:25:22,434] INFO MediaScannerService - Starting to scan media library.
+[2026-01-08 14:25:22,534] INFO UPnPService - Starting UPnP service...
+[2026-01-08 14:25:22,618] INFO PodcastService - Automatic Podcast update scheduled to run every 24 hour(s), starting at Thu Jan 08 14:30:22 UTC 2026
+[2026-01-08 14:25:22,753] INFO MediaScannerService - Scanned media library with 1 entries.
+[2026-01-08 14:25:22,753] INFO MediaScannerService - Marking non-present files.
+[2026-01-08 14:25:22,754] INFO MediaScannerService - Marking non-present artists.
+[2026-01-08 14:25:22,754] INFO MediaScannerService - Marking non-present albums.
+[2026-01-08 14:25:22,755] INFO MediaScannerService - Completed media library scan.
+[2026-01-08 14:25:22,820] INFO UPnPService - Disabling UPnP/DLNA media server
+[2026-01-08 14:25:22,820] INFO UPnPService - Starting UPnP service - Done!
+[2026-01-08 14:25:22,824] INFO PlaylistService - Starting playlist import.
+[2026-01-08 14:25:22,824] INFO PlaylistService - Completed playlist import.
+[2026-01-08 14:25:28,537] INFO BootstrapVerificationFilter - Servlet container: jetty-6.1.x
+[2026-01-08 14:25:32,562] WARN NetworkService - No UPnP router found.
+[2026-01-08 14:25:59,820] INFO VersionService - Resolved local Subsonic version to: 6.1.6
+[2026-01-08 14:25:59,876] INFO PlayerDao - Created player 1.
+[2026-01-08 14:25:59,943] INFO VersionService - Resolved latest Subsonic final version to: 6.1.6
+[2026-01-08 14:25:59,943] INFO VersionService - Resolved latest Subsonic beta version to: 6.1.beta2
+[2026-01-08 14:30:22,618] INFO PodcastService - Starting scheduled Podcast refresh.
+[2026-01-08 14:30:22,619] INFO PodcastService - Completed scheduled Podcast refresh.

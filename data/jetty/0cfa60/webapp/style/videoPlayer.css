@@ -1,0 +1,151 @@
+
+.flowplayer, .flowplayer.is-playing, .flowplayer.is-fullscreen .fp-player {
+    background-color:black;
+}
+
+.flowplayer .fp-subtitle p {
+    font-size: 20px;
+}
+
+#overlay {
+    position: absolute;
+    z-index: 20;
+    font-size: 19px;
+    color: white;
+    background-color: black;
+    align-items: center;
+    justify-content: center;
+    display: none;
+}
+
+#media-control {
+    width: 100%;
+    display: flex;
+    padding-bottom: 5px;
+    align-items: center;
+}
+
+#title {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+#audio-track {
+    margin-left: 14px;
+    margin-right: 14px;
+}
+
+#progress-slider {
+    margin: 8px;
+    height: 3px;
+}
+
+#volume-slider {
+    width: 90px;
+    height: 3px;
+    margin-right: 8px;
+}
+
+#play, #pause, #buffer {
+    font-size: 24px;
+    color: #E65100;
+    margin-right: 48px;
+    margin-left: 48px;
+}
+
+#play, #pause {
+    cursor: pointer;
+}
+
+#play:hover, #pause:hover {
+    opacity: 0.8;
+}
+
+#pause, #buffer {
+    display: none;
+}
+
+#progress-and-duration, #current-bitrate {
+    margin-left: 15px;
+    margin-right: 15px;
+}
+
+#cast-active, #cast-idle {
+    padding: 8px;
+    margin: 0 4px;
+    cursor: pointer;
+    display: none;
+}
+
+#audio-on, #audio-off {
+    cursor: pointer;
+    font-size: 20px;
+    padding: 8px;
+}
+
+#audio-off {
+    display: none;
+}
+
+#new-window, #fullscreen, #share, #download, #cc-on, #cc-off {
+    font-size: 20px;
+    padding: 8px;
+    margin: 0 4px;
+    cursor: pointer;
+}
+
+#cc-off, #cc-on {
+    font-size: 26px;
+    display: none;
+}
+
+#cc-on, #cast-active {
+    color: #E65100;
+}
+
+#fullscreen {
+    font-size: 26px;
+}
+
+/* Work-around for Safari */
+#new-window, #share, #download, #audio-on, #audio-off {
+    width: 20px;
+}
+#cast-active, #cast-idle {
+    width: 24px;
+}
+#cc-on, #cc-off, #fullscreen {
+    width: 26px;
+}
+
+#play, #pause, #buffer, #new-window, #share, #download, #cc-on, #cc-off, #fullscreen, #audio-on, #audio-off, #cast-active, #cast-idle, #star {
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* TODO: Layout work-around */
+#new-window, #share, #download, #cc-on, #cc-off, #fullscreen, #audio-on, #audio-off, #cast-active, #cast-idle, #star, #audio-track {
+    z-index: 1
+}
+
+.ui-slider .ui-slider-handle {
+    width: 12px;
+    height: 12px;
+    cursor: pointer;
+    background: #E65100;
+    display: none;
+    border: none;
+}
+
+.ui-slider {
+    cursor: pointer;
+    border: none;
+}
+
+.ui-slider-range-min {
+    background: #E65100;
+}
+
+.ui-slider-handle:focus {
+    outline: none;
+}
