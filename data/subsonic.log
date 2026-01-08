@@ -269,3 +269,4 @@
 [2026-01-08 14:25:59,943] INFO VersionService - Resolved latest Subsonic beta version to: 6.1.beta2
 [2026-01-08 14:30:22,618] INFO PodcastService - Starting scheduled Podcast refresh.
 [2026-01-08 14:30:22,619] INFO PodcastService - Completed scheduled Podcast refresh.
+[2026-01-08 15:15:01,588] INFO TranscodingService - Created directory /data/transcode

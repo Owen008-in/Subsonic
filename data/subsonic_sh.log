@@ -82,3 +82,8 @@ Subsonic running on: http://localhost:4040/
 [GC (Allocation Failure)  59479K->40801K(136704K), 0.0163699 secs]
 [GC (Allocation Failure)  58209K->40722K(136704K), 0.0220234 secs]
 [GC (Allocation Failure)  58130K->40876K(136704K), 0.0115971 secs]
+[GC (Allocation Failure)  58284K->40812K(136704K), 0.0061323 secs]
+[GC (Allocation Failure)  58220K->41367K(136704K), 0.0072305 secs]
+[GC (Allocation Failure)  58775K->43099K(136704K), 0.0055888 secs]
+[GC (Allocation Failure)  60507K->43187K(136704K), 0.0056273 secs]
+[GC (Allocation Failure)  60595K->42519K(136704K), 0.0050849 secs]
